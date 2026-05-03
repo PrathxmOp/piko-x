@@ -39,11 +39,19 @@ public class FriendshipStatusIndicator {
      * @param text String text to set in badge label.
      * @throws Exception If an exception occurs during the method invocation.
      **/
-    private static void setInternalBadgeText(Object badgeObject,String text) throws Exception {
+    private static void setInternalBadgeText(Object badgeObject, String text, Boolean followed_by) throws Exception {
         Entity entity = new Entity(badgeObject);
         TextView badgeView = (TextView) entity.getMethod("getView");
         badgeView.setVisibility(View.VISIBLE);
         badgeView.setText(text);
+
+        if (followed_by) {
+            badgeView.setTextColor(android.graphics.Color.parseColor("#4CAF50")); // Green color
+            badgeView.setTypeface(null, android.graphics.Typeface.BOLD); // Highlighted (Bold)
+        } else {
+            badgeView.setTextColor(android.graphics.Color.parseColor("#8E8E8E")); // Default/Gray color
+            badgeView.setTypeface(null, android.graphics.Typeface.NORMAL);
+        }
     }
 
     public static void indicators(Object profileInfoObject, Object badgeObject){
@@ -59,7 +67,7 @@ public class FriendshipStatusIndicator {
                 UserFriendshipStatus userFriendshipStatus = viewingUserData.getUserFriendshipStatus();
                 Boolean followed_by = userFriendshipStatus.getFollowBackStatus();
                 String indicatorText = followed_by ? Strings.FBI_FOLLOWS_YOU : Strings.FBI_DOESNT_FOLLOWS_YOU;
-                setInternalBadgeText(badgeObject, indicatorText);
+                setInternalBadgeText(badgeObject, indicatorText, followed_by);
 
             } catch (Exception ex) {
                 Logger.printException(() -> "Failed follow back indicator", ex);
